@@ -63,7 +63,7 @@ while True:
             else:
                 try_times += 1
                 print(f"\rTry {try_times} times.", flush=True, end="")
-                time.sleep(0.1)
+                # time.sleep(0.1)
                 continue
         if success:
             break
