@@ -9,24 +9,31 @@ session_id = ""
 content = ""
 try_times = 1
 
+fake_headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"}
+
 
 def login():
-    login_r = session.post("https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/bookmark.php", data=data.login_data)
+    login_r = session.post("https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/bookmark.php", data=data.login_data, headers=fake_headers)
 
-    # print(login.history)  # 302
-    # print(login.url)  # The URL contents session ID.
+    # print(login_r.history)  # 302
+    # print(login_r.url)  # The URL contents session ID.
 
     # Reference: https://stackoverflow.com/questions/5074803/retrieving-parameters-from-a-url
+    if not login_r.history:
+        print("Login failed: Please check your account or your password.")
+        quit(1)
     ssid = parse_qs(urlparse(login_r.url).query)["session_id"][0]
     return ssid
 
 
 def choose(ssid):
-    # c = session.get(f"https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/Add_Course00.cgi?session_id={ssid}")  # choose
+    # c = session.get(f"https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/Add_Course00.cgi?session_id={ssid}", headers=fake_headers)  # choose
     # print(c.content.decode("utf-8"))
 
     data.choose["session_id"] = ssid
-    c2 = session.post("https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/Add_Course01.cgi", data=data.choose)
+    c2 = session.post("https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/Add_Course01.cgi", data=data.choose, headers=fake_headers)
+    # print(c2.content.decode("utf-8"))
+    # input()
     return c2.content.decode("utf-8")
 
 
@@ -43,8 +50,8 @@ def check(choose_content):
 
 def select(ssid):
     data.select["session_id"] = ssid
-    r = session.post("https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/Add_Course01.cgi", data=data.select)
-    # print(r.content.decode("utf-8"))
+    r = session.post("https://kiki.ccu.edu.tw/~ccmisp06/cgi-bin/class_new/Add_Course01.cgi", data=data.select, headers=fake_headers)
+    print(r.content.decode("utf-8"))
     print(f"\nTry {try_times} times.")
     print("Success.")
     return True
