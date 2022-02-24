@@ -55,8 +55,8 @@ def check(choose_content):
     soup = BeautifulSoup(choose_content, "html.parser")
     chk_box = soup.select(data.value)  # CSS Selector
     if len(chk_box) == 0:
-        print("already selected!")
-        exit(0)
+        print("seems already selected!")
+        # exit(0)
     chk_box = chk_box[0]
     if os.getenv("DEBUG"):
         print("Course Information:")
